@@ -3,12 +3,10 @@ import { inject, ref } from "vue";
 
 const allTask = inject("allTask");
 const newTask = ref("");
+
 const addTask = () => {
   if (newTask.value != "") {
-    allTask.value.push({
-      id: Date.now(),
-      taskName: newTask.value,
-    });
+    allTask.value.push({ id: Date.now(), taskName: newTask.value });
     newTask.value = "";
   }
 };
@@ -30,7 +28,6 @@ const addTask = () => {
 .head {
   text-align: center;
 }
-
 button {
   margin: 2px;
 }

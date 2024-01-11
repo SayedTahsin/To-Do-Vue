@@ -1,22 +1,19 @@
 <script setup>
 import { inject } from "vue";
+
 defineProps(["id", "taskname"]);
 
 const completedTask = inject("completedTask");
 const isActive = (targetId) => {
   return completedTask.value.some((item) => item.id === targetId);
 };
+
 </script>
 
 <template>
   <div :class="{ taskClass: true, completed: isActive(id) }">
     <label :for="id">{{ taskname }}</label>
-    <input
-      type="checkbox"
-      :id="id"
-      :value="{ id: id, taskName: taskname }"
-      v-model="completedTask"
-    />
+    <input type="checkbox" :id="id" :value="{ id: id, taskName: taskname }" v-model="completedTask" />
   </div>
 </template>
 

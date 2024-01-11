@@ -1,28 +1,13 @@
 <script setup>
-import { inject, ref } from "vue";
+import { inject} from "vue";
 const page = inject("page");
 </script>
 
 <template>
   <div class="filterButton">
-    <button
-      @click="$emit('changePage', 'All')"
-      :class="{ active: page == 'All' }"
-    >
-      All Task
-    </button>
-    <button
-      @click="$emit('changePage', 'Completed')"
-      :class="{ active: page == 'Completed' }"
-    >
-      Completed Task
-    </button>
-    <button
-      @click="$emit('changePage', 'Pending')"
-      :class="{ active: page == 'Pending' }"
-    >
-      Pending Task
-    </button>
+    <button @click="$emit('changePage', 'All')" :class="{ active: page == 'All' }" > All Task </button>
+    <button @click="$emit('changePage', 'Completed')" :class="{ active: page == 'Completed' }" > Completed Task </button>
+    <button @click="$emit('changePage', 'Pending')" :class="{ active: page == 'Pending' }" > Pending Task </button>
   </div>
 </template>
 

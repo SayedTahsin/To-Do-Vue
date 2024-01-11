@@ -3,6 +3,7 @@ import { ref, computed, provide } from "vue";
 import Task from "./components/task.vue";
 import Head from "./components/head.vue";
 import Foot from "./components/foot.vue";
+
 const allTask = ref([]);
 const completedTask = ref([]);
 const pendingTask = computed(() => {
@@ -10,7 +11,6 @@ const pendingTask = computed(() => {
     (item1) => !completedTask.value.some((item2) => item1.id === item2.id)
   );
 });
-
 const page = ref("All");
 
 provide("completedTask", completedTask);
@@ -26,18 +26,10 @@ provide("page", page);
       <Task v-for="task in allTask" :taskname="task.taskName" :id="task.id" />
     </div>
     <div v-else-if="page === 'Completed'">
-      <Task
-        v-for="task in completedTask"
-        :taskname="task.taskName"
-        :id="task.id"
-      />
+      <Task v-for="task in completedTask" :taskname="task.taskName" :id="task.id" />
     </div>
     <div v-else>
-      <Task
-        v-for="task in pendingTask"
-        :taskname="task.taskName"
-        :id="task.id"
-      />
+      <Task v-for="task in pendingTask" :taskname="task.taskName" :id="task.id" />
     </div>
 
     <Foot @changePage="(val) => (page = val)" />
