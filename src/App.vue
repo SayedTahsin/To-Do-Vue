@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, provide } from "vue";
+import Task from "./components/task.vue";
 
 const newTask = ref("");
 const allTask = ref([]);
@@ -9,10 +10,9 @@ const pendingTask = computed(() => {
     (item1) => !completedTask.value.some((item2) => item1.id === item2.id)
   );
 });
-const isActive = (targetId) => {
-  return completedTask.value.some((item) => item.id === targetId);
-};
-const page = ref(1);
+
+const page = ref("All");
+
 const addTask = () => {
   if (newTask.value != "") {
     allTask.value.push({
@@ -22,6 +22,8 @@ const addTask = () => {
     newTask.value = "";
   }
 };
+
+provide("completedTask", completedTask);
 </script>
 
 <template>
@@ -33,66 +35,28 @@ const addTask = () => {
     </div>
 
     <br />
-    <br />
     <hr />
     <br />
 
-    <div v-if="page == 1">
-      <div
-        v-for="task in allTask"
-        :class="{ taskClass: true, completed: isActive(task.id) }"
-      >
-        <label for="{{task.id}}">{{ task.taskName }}</label>
-        <input
-          id="{{task.id}}"
-          type="checkbox"
-          :value="{ id: task.id, taskName: task.taskName }"
-          v-model="completedTask"
-        />
-      </div>
+    <div v-if="page === 'All'">
+      <Task v-for="task in allTask" :taskname="task.taskName" :id="task.id" />
     </div>
-
-    <div v-else-if="page == 2">
-      <div
-        v-for="task in completedTask"
-        :class="{ taskClass: true, completed: isActive(task.id) }"
-      >
-        <label for="{{task.id}}">{{ task.taskName }}</label>
-        <input
-          id="{{task.id}}"
-          type="checkbox"
-          :value="{ id: task.id, taskName: task.taskName }"
-          v-model="completedTask"
-        />
-      </div>
+    <div v-else-if="page === 'Completed'">
+      <Task v-for="task in completedTask" :taskname="task.taskName" :id="task.id" />
     </div>
-
     <div v-else>
-      <div
-        v-for="task in pendingTask"
-        :class="{ taskClass: true, completed: isActive(task.id) }"
-      >
-        <label for="{{task.id}}">{{ task.taskName }}</label>
-        <input
-          id="{{task.id}}"
-          type="checkbox"
-          :value="{ id: task.id, taskName: task.taskName }"
-          v-model="completedTask"
-        />
-      </div>
+      <Task v-for="task in pendingTask" :taskname="task.taskName" :id="task.id"
+      />
     </div>
 
     <div class="filterButton">
-      <button @click="page = 1" :class="{ active: page == 1 }">All Task</button>
-      <button @click="page = 2" :class="{ active: page == 2 }">
-        Completed Task
-      </button>
-      <button @click="page = 3" :class="{ active: page == 3 }">
-        Pending Task
-      </button>
+      <button @click="page = 'All'" :class="{ active: page == 'All' }"> All Task </button>
+      <button @click="page = 'Completed'" :class="{ active: page == 'Completed' }" > Completed Task </button>
+      <button @click="page = 'Pending'" :class="{ active: page == 'Pending' }"> Pending Task </button>
     </div>
   </div>
 </template>
+
 
 <style>
 .main {
@@ -109,21 +73,6 @@ const addTask = () => {
 }
 button {
   margin: 2px;
-}
-.taskClass {
-  font-size: larger;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 2px;
-  margin-bottom: 2px;
-}
-.taskClass input {
-  margin-bottom: 8px;
-}
-.completed {
-  background-color: rgba(232, 232, 232, 0.664);
-  text-decoration: line-through;
 }
 .active {
   font-weight: bold;
