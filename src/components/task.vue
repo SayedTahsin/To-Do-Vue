@@ -6,8 +6,6 @@ const completedTask = inject("completedTask");
 const isActive = (targetId) => {
   return completedTask.value.some((item) => item.id === targetId);
 };
-
-
 </script>
 
 <template>
@@ -22,7 +20,7 @@ const isActive = (targetId) => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .taskClass {
   font-size: larger;
   display: flex;
