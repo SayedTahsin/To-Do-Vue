@@ -9,14 +9,18 @@ const pendingTask = computed(() => {
     (item1) => !completedTask.value.some((item2) => item1.id === item2.id)
   );
 });
+const isActive = (targetId) => {
+  return completedTask.value.some((item) => item.id === targetId);
+};
 const page = ref(1);
-
 const addTask = () => {
-  allTask.value.push({
-    id: Date.now(),
-    taskName: newTask.value,
-  });
-  newTask.value = "";
+  if (newTask.value != "") {
+    allTask.value.push({
+      id: Date.now(),
+      taskName: newTask.value,
+    });
+    newTask.value = "";
+  }
 };
 </script>
 
@@ -34,7 +38,10 @@ const addTask = () => {
     <br />
 
     <div v-if="page == 1">
-      <div v-for="task in allTask" class="task">
+      <div
+        v-for="task in allTask"
+        :class="{ taskClass: true, completed: isActive(task.id) }"
+      >
         <label for="{{task.id}}">{{ task.taskName }}</label>
         <input
           id="{{task.id}}"
@@ -46,7 +53,10 @@ const addTask = () => {
     </div>
 
     <div v-else-if="page == 2">
-      <div v-for="task in completedTask" class="task">
+      <div
+        v-for="task in completedTask"
+        :class="{ taskClass: true, completed: isActive(task.id) }"
+      >
         <label for="{{task.id}}">{{ task.taskName }}</label>
         <input
           id="{{task.id}}"
@@ -58,7 +68,10 @@ const addTask = () => {
     </div>
 
     <div v-else>
-      <div v-for="task in pendingTask" class="task">
+      <div
+        v-for="task in pendingTask"
+        :class="{ taskClass: true, completed: isActive(task.id) }"
+      >
         <label for="{{task.id}}">{{ task.taskName }}</label>
         <input
           id="{{task.id}}"
@@ -70,9 +83,13 @@ const addTask = () => {
     </div>
 
     <div class="filterButton">
-      <button @click="page = 1">All Task</button>
-      <button @click="page = 2">Completed Task</button>
-      <button @click="page = 3">Pending Task</button>
+      <button @click="page = 1" :class="{ active: page == 1 }">All Task</button>
+      <button @click="page = 2" :class="{ active: page == 2 }">
+        Completed Task
+      </button>
+      <button @click="page = 3" :class="{ active: page == 3 }">
+        Pending Task
+      </button>
     </div>
   </div>
 </template>
@@ -93,10 +110,22 @@ const addTask = () => {
 button {
   margin: 2px;
 }
-.task {
+.taskClass {
   font-size: larger;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  padding: 2px;
+  margin-bottom: 2px;
+}
+.taskClass input {
+  margin-bottom: 8px;
+}
+.completed {
+  background-color: rgba(232, 232, 232, 0.664);
+  text-decoration: line-through;
+}
+.active {
+  font-weight: bold;
 }
 </style>
