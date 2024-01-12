@@ -1,6 +1,21 @@
 <script setup>
+import { computed } from "vue";
+
 const props = defineProps(["allTask", "page"]);
 const emit = defineEmits(["changingStatus"]);
+
+const filteredTask = computed(() => {
+  const res = props.allTask.filter((element) => {
+    if (props.page === "All") {
+      return element;
+    } else if (props.page === "Completed") {
+      if (element.status === true) return element;
+    } else {
+      if (element.status === false) return element;
+    }
+  });
+  return res;
+});
 
 const Doit = (event, id) => {
   emit("changingStatus", id, event.target.checked);
@@ -8,28 +23,9 @@ const Doit = (event, id) => {
 </script>
 
 <template>
-  <div v-if="props.page == 'All'">
-    <div v-for="task in props.allTask" :class="{ taskClass: true, completed: task.status }">
-      <label :for="task.id">{{ task.taskName }}</label>
-      <input :id="task.id" :checked="task.status" type="checkbox" @change="Doit($event, task.id)" />
-    </div>
-  </div>
-
-  <div v-else-if="props.page == 'Completed'">
-    <div v-for="task in allTask">
-      <div v-if="task.status === true" :class="{ taskClass: true, completed: task.status }">
-        <label :for="task.id">{{ task.taskName }}</label>
-        <input :id="task.id" :checked="task.status" type="checkbox" @change="Doit($event, task.id)" />
-      </div>
-    </div>
-  </div>
-  <div v-else>
-    <div v-for="task in allTask">
-      <div v-if="task.status === false" :class="{ taskClass: true, completed: task.status }">
-        <label :for="task.id">{{ task.taskName }}</label>
-        <input :id="task.id" :checked="task.status" type="checkbox" @change="Doit($event, task.id)" />
-      </div>
-    </div>
+  <div v-for="task in filteredTask" :class="{ taskClass: true, completed: task.status }" >
+    <label :for="task.id">{{ task.taskName }}</label> 
+    <input :id="task.id" :checked="task.status" type="checkbox" @change="Doit($event, task.id)" />
   </div>
 </template>
 
