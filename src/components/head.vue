@@ -1,12 +1,13 @@
 <script setup>
-import { inject, ref } from "vue";
+import { ref } from "vue";
 
-const allTask = inject("allTask");
 const newTask = ref("");
+const emit = defineEmits(['addTask'])
 
 const addTask = () => {
   if (newTask.value != "") {
-    allTask.value.push({ id: Date.now(), taskName: newTask.value });
+    const taskObject = {id: Date.now(), taskName: newTask.value, status: false};
+    emit('addTask',taskObject);
     newTask.value = "";
   }
 };

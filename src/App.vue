@@ -1,38 +1,23 @@
 <script setup>
-import { ref, computed, provide } from "vue";
+import { ref } from "vue";
 import Task from "./components/task.vue";
 import Head from "./components/head.vue";
 import Foot from "./components/foot.vue";
 
 const allTask = ref([]);
-const completedTask = ref([]);
-const pendingTask = computed(() => {
-  return allTask.value.filter(
-    (item1) => !completedTask.value.some((item2) => item1.id === item2.id)
-  );
-});
 const page = ref("All");
 
-provide("completedTask", completedTask);
-provide("allTask", allTask);
-provide("page", page);
+const changeStatus = (id, checked) => {
+  const index = allTask.value.findIndex((obj) => obj.id === id);
+  allTask.value[index].status = checked;
+};
 </script>
 
 <template>
   <div class="main">
-    <Head />
-
-    <div v-if="page === 'All'">
-      <Task v-for="task in allTask" :taskname="task.taskName" :id="task.id" />
-    </div>
-    <div v-else-if="page === 'Completed'">
-      <Task v-for="task in completedTask" :taskname="task.taskName" :id="task.id" />
-    </div>
-    <div v-else>
-      <Task v-for="task in pendingTask" :taskname="task.taskName" :id="task.id" />
-    </div>
-
-    <Foot @changePage="(val) => (page = val)" />
+    <Head @addTask="(val) => { allTask.push(val); }" />
+    <Task :allTask="allTask" :page="page" @changingStatus="changeStatus" />
+    <Foot :page="page" @changePage="(val) => (page = val)" />
   </div>
 </template>
 
